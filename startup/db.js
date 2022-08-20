@@ -3,7 +3,8 @@ const { logger } = require('../logger')
 
 const mongoConnect = async (address, dbName, username, password) => {
   try {
-    await mongoose.connect(`mongodb+srv://${username}:${password}@${address}${dbName}?retryWrites=true&w=majority`)
+    await mongoose.connect(`mongodb+srv://${username}:${password}@${address}${dbName}?retryWrites=true&w=majority`,
+      { useNewUrlParser: true })
 
     logger.info('Connected to database successfully..')
   } catch (e) {
