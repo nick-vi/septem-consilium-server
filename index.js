@@ -14,6 +14,4 @@ if (process.env.NODE_DEV) {
 require('./startup/db')
 require('./startup/routes')(app)
 
-app.listen(process.env.PORT, () => {
-  logger.info(`App is listening on port ${process.env.PORT}...`)
-})
+app.listen(process.env.PORT, () => logger.info(`App is listening on port ${process.env.PORT}...`))
