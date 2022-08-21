@@ -11,9 +11,4 @@ const mongoConnect = async (dbName) => {
   }
 }
 
-mongoConnect(
-  process.env.DB_ADDRESS,
-  process.env.DB_NAME,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD
-)
+mongoConnect(process.env.DB_NAME)
