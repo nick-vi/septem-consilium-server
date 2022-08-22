@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 const { logger } = require('../logger')
 
-const mongoConnect = async (dbName) => {
+const mongoConnect = async (address, dbName, username, password) => {
   try {
-    await mongoose.connect(`mongodb://localhost:27017/${dbName}`)
+    await mongoose.connect(`mongodb+srv://${username}:${password}@${address}${dbName}?retryWrites=true&w=majority`)
 
     logger.info('Connected to database successfully..')
   } catch (e) {
@@ -11,4 +11,9 @@ const mongoConnect = async (dbName) => {
   }
 }
 
-mongoConnect(process.env.DB_NAME)
+mongoConnect(
+  process.env.DB_ADDRESS,
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD
+)
