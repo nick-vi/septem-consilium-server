@@ -2,6 +2,8 @@ const { User, validateUser, validateUserUpdate } = require('../models/user.model
 const bcrypt = require('bcrypt')
 const { ServerError } = require('../utils')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+const { pick } = require('../utils/data')
 
 const saltRounds = 10
 
@@ -9,11 +11,19 @@ exports.getUsersService = async () => {
   return await User.find().select('-__v')
 }
 
-exports.getUserService = async (id) => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new ServerError('Invalid ObjectId', 400)
-  const user = await User.findById(id)
-  if (!user) throw new ServerError('User was not found', 404)
-  return user
+exports.getUserService = async (id, token) => {
+  try {
+    const result = jwt.verify(token, process.env.JWT_PRIVATE_KEY)
+    const { sub: userId } = result
+    if (userId !== id) throw new ServerError('Token doesn\'t match userId.', 400)
+    let user = await User.findById(userId)
+    if (!user) throw new ServerError('User was not found', 404)
+    user = pick(user._doc, ['name', 'email'])
+    user.userId = userId
+    return user
+  } catch (ex) {
+    throw new ServerError('Invalid token.', 400)
+  }
 }
 
 exports.createUserService = async (payload) => {

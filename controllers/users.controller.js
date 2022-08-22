@@ -3,7 +3,8 @@ const {
   getUserService,
   createUserService,
   updateUserService,
-  deleteUserService
+  deleteUserService,
+  getUserByTokenService
 } = require('../services/users.service')
 
 /**
@@ -24,7 +25,19 @@ module.exports.getUsersController = async (req, res) => {
 module.exports.getUserController = async (req, res) => {
   try {
     const { id } = req.params
-    const user = await getUserService(id)
+    const { token } = req.query
+    const user = await getUserService(id, token)
+    res.send(user)
+  } catch (err) {
+    res.status(err.httpStatus).send(err.error)
+  }
+}
+
+module.exports.getUserByTokenController = async (req, res) => {
+  try {
+    console.log('test')
+    const { token } = req.params
+    const user = await getUserByTokenService(token)
     res.send(user)
   } catch (err) {
     res.status(err.httpStatus).send(err.error)
